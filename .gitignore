@@ -1,5 +1,2 @@
-*.pyc
-*.DS_Store
-*~
-#*#
-autoscraper/logs/*
+/target
+.env
