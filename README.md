@@ -4,6 +4,18 @@
 
 A **Solana Sandwich Bot** is a type of **MEV (Maximal Extractable Value)** bot designed to exploit price discrepancies in Solana's decentralized exchange (**DEX**) transactions by inserting ("sandwiching") its own trades around a victim's transaction.
 
+## Let's Connect!,
+
+<a href="mailto:fenrow325@gmail.com" target="_blank">
+  <img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Gmail">
+</a>
+<a href="https://t.me/fenrow" target="_blank">
+  <img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram">
+</a>
+<a href="https://discord.com/users/fenrow_325" target="_blank">
+  <img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord">
+</a>
+
 ### Global Metrics
 |Metric|Value|
 |---|---|
