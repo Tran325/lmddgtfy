@@ -1,9 +1,10 @@
-# Sandwich Bot BSC
+# Sandwich Bot
 
-WARNING: I provide no guarantee of even a single line of code in this repo. This is outdated by at least 4 years and is
-only open-sourced for educational purposes. Most of the code is undocumented since I am a solo-developer. Use AI!
+## Overview
 
-I wasn't proud of this code 4 years ago, I am even less proud of this code now. But it printed $$$.
+A sandwich bot on the BSC (Binance Smart Chain) is a trading bot designed to exploit price fluctuations by placing front-running and back-running transactions around a target trade. 
+It works by detecting pending transactions in the mempool, inserting buy orders before the target (front-running), and selling immediately after (back-running) to profit from the price impact. 
+The BSC's lower fees and high transaction volume make it a popular chain for sandwich attacks. However, such bots operate in a legal gray area and may face scrutiny from regulators and exchanges. 
 
 # About
 For a few discontinuous months in between 2020-2021 I ran a bunch of bots primarily on bscscan. Sandwiching was one of them.
