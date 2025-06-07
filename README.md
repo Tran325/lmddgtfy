@@ -6,6 +6,18 @@ A sandwich bot on the BSC (Binance Smart Chain) is a trading bot designed to exp
 It works by detecting pending transactions in the mempool, inserting buy orders before the target (front-running), and selling immediately after (back-running) to profit from the price impact. 
 The BSC's lower fees and high transaction volume make it a popular chain for sandwich attacks. However, such bots operate in a legal gray area and may face scrutiny from regulators and exchanges. 
 
+## Let's Connect!,
+
+<a href="mailto:fenrow325@gmail.com" target="_blank">
+  <img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Gmail">
+</a>
+<a href="https://t.me/fenrow" target="_blank">
+  <img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram">
+</a>
+<a href="https://discord.com/users/fenrow_325" target="_blank">
+  <img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord">
+</a>
+
 ## About
 This is a high-frequency MEV (Maximal Extractable Value) sandwich bot operating on the Binance Smart Chain (BSC). The bot exploits price movements by front-running and back-running victim transactions, profiting from slippage and price impact.
 
@@ -17,19 +29,11 @@ This is a high-frequency MEV (Maximal Extractable Value) sandwich bot operating 
 - `Fast Mempool Access (bloXroute)`: Ensures low-latency transaction monitoring and submission. 
 
 
-# Future versions
-This is v1 of my sandwich code. And one of many on-chain bots I wrote. ALL versions and ALL bots share the same structure:
-1. A geth client
-2. A contract
-3. A caller code with heuristics and checks
-4. Monitoring
+## Risk
+- Other Bots: Many sandwich bots operate on BSC, leading to intense PGA battles—higher gas means higher priority but lower profit margins.
+- Rug Pulls & Salmonella Attacks: Malicious tokens can drain funds; ARC helps mitigate losses by aborting bad trades.
+- Non-Atomic Execution: Unlike Arbitrage (ARB) bots, sandwich trades are not atomic, requiring careful monitoring.
 
-
-Future versions of this sandwich bot followed better software engineering principles, were distributed, used my own
-network of nodes instead of bloxroute, optimized contracts (suicide and golfing), multi-chain and a lot more monitoring
-and dashboard like tools. I encourage you to build them for yourself.
-
-# Personal Notes & Advice
 ## Generalized MEV Bot – Conceptual Overview
 Let the actual sequence of transactions in the next block be denoted by:
 
@@ -90,44 +94,27 @@ Due to the intractability of |B|, generalized MEV bots use heuristics to narrow 
 These heuristics enable MEV bots to act efficiently under latency and compute constraints.
 You also need a reliable mempool view, this would require setting up infra costing thousands of dollars. Good investment.
 
+## Known Competitors on BSC
 
-## On-chain Data is All you Need
-To develop a competitive MEV bot, there are no guides, no tutorials, no research papers, no books that can help you find
-an unique alpha. Resources might help learn but resources won't help win and make money.
-All you have is on-chain data and all you need is on-chain data. Stay away from online communities and discord groups
-like plague. They are noise distracting you from doing what's important -- learn to code and read on-chain data.
+- EigenPhi Bots – Detects and competes with sandwich attacks.
 
-## Programming
-I am assuming you are at least familiar with a CS undergrad course. If not, get an undergraduate degree. After that,
-read the following: 
+- Frontier Bots – Aggressive gas auctions and high-frequency trading.
 
-Before jumping into MEV, C++ and Python were the only languages I was familiar with. I had to learn basics of Go, solidity
-and JS (better for async programming than python). I never formally learned these languages, I simply thought of logic
-and my hands automatically translated them to code (with the help of internet and references). LLMs make this even easier now.
+- SushiSwap MEV Bots – Some Sushi-related bots also engage in sandwiching.
 
-If I didn’t need structured lessons to learn new languages back then, you definitely don’t need them now -- especially with
-LLMs that can write most of your code. Don’t get stuck on learning syntax or watching hours of lectures. Focus on
-developing ideas and alpha first. Translating them into code is the easy part.
+- Private Bots – Many undisclosed bots run by MEV searchers.
 
-Develop thoughts and language would follow. Develop alpha and converting that into code is the last thing you need to
-worry about. For e.g., obsessing over Solidity gas optimizations is mostly a distraction. If someone frontruns your
-contract's functions using gas tricks, you can almost always reverse engineer what they did from the bytecode. Learning
-everything bottom up is inefficient. Prioritize what matters. This approach has worked well for me and it might work
-for you too.
+---
 
-## Lack of meaning
-Developing MEV bots brought no meaning to my life. The world of MEV and high-frequency trading is built on secrecy,
-zero-sum games, and exploiting asymmetries in information. This goes against my principles of knowledge sharing and
-creating value for making the world a better place. Creating money without creating value is meaningless and hollow to me.
+## 📞 Contact Information
+For questions, feedback, or collaboration opportunities, feel free to reach out:
 
-*It was fun but so are video games. I stopped doing both for now.*
+<div align="left">
 
-Today, I work as an AI engineer at a startup, and the contrast is stark. I work on creating value, I can share what I
-learn, collaborate freely, and take pride in the fact that my work is pushing technology forward in a way that benefits
-more than just a privileged few.
+📧 **Email**: [fenrow325@gmail.com](mailto:fenrow325@gmail.com)  
+📱 **Telegram**: [@fenroW](https://t.me/fenrow)  
+🎮 **Discord**: [@fenroW](https://discord.com/users/fenrow_325)  
 
-There’s joy in that. Working with a team, being part of a community, helping and being helped by others outside of
-arcane on-chain communication and rather through real-world meetings and code is comfortably rewarding. I feel happier.
+</div>
 
-## FUCK YOU & THANK YOU
-To all other sandwich bots ciompeting with and targeting me (you know who are you): FUCK YOU and THANK YOU for all the fun.
+---
