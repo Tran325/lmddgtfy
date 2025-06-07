@@ -6,25 +6,15 @@ A sandwich bot on the BSC (Binance Smart Chain) is a trading bot designed to exp
 It works by detecting pending transactions in the mempool, inserting buy orders before the target (front-running), and selling immediately after (back-running) to profit from the price impact. 
 The BSC's lower fees and high transaction volume make it a popular chain for sandwich attacks. However, such bots operate in a legal gray area and may face scrutiny from regulators and exchanges. 
 
-# About
-For a few discontinuous months in between 2020-2021 I ran a bunch of bots primarily on bscscan. Sandwiching was one of them.
-This repo has code for the version 1 of a sandwich bot that was competitive for around a week. It was wildly profitable.
+## About
+This is a high-frequency MEV (Maximal Extractable Value) sandwich bot operating on the Binance Smart Chain (BSC). The bot exploits price movements by front-running and back-running victim transactions, profiting from slippage and price impact.
 
-I am a solo developer and being competitive on-chain is more than a fulltime job, I had several sleepless nights.
-However, developing MEV bots is a hyper-learning experience. I would recommend every programmer to do it at least once in their
-life. You will learn distributed computing, parallel programming, optimization techniques, reliable system design and more.
-The thrill of fighting with code on-chain is unmatched. It's addicting, it's tiring, it's thrilling, it's humbling.
-
-Following is the alpha for my sandwich bot:
-1. PGA: Price Gas Auction -- You're not the only sandwich bot on chain, you need to out-gas others. PGA helps!
-2. ARC: Active Rug Combat -- Salmonella attacks and rugs are common, you need to actively combat them and cancel your transactions before the block is mined. Unlike ARB bots, transactions aren't atomic here. I wasn't using flashbot bundles.
-3. Simulating the next block with a new geth API call -- I use some heuristics to identify targets and binary search to find my sandwich parameters. This is a very powerful tool, this is the entry-way to generalized MEV bots. The world is your oyester!
-4. Fast mempool (bloxroute)
-
-# Directory Structure
-- `contract`: Solidity code for the sandwich contract bot
-- `geth_fork`: My fork of geth with an additional API for simulating the next block
-- `client`: NodeJS client code actually running the bot, it reads the mempool to identify opportunities and makes calls to our contract using ethers/web3js
+## Key Features
+- `PGA (Price Gas Auction)`: Competes with other bots by optimizing gas bids to ensure transaction priority.
+- `ARC (Active Rug Combat)`: Detects and cancels transactions if a "rug pull" or malicious attack is detected before block finalization.
+- `Next-Block Simulation`: Uses Geth API calls to simulate the next block and identify profitable sandwich opportunities.
+- `Binary Search for Parameters`: Dynamically adjusts sandwich parameters (gas, slippage, profit thresholds) for optimal execution.
+- `Fast Mempool Access (bloXroute)`: Ensures low-latency transaction monitoring and submission. 
 
 
 # Future versions
