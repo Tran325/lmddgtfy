@@ -1,119 +1,142 @@
-# Solana Sandwich Bot
+# Sandwich Bot BSC
 
-## Overview
+WARNING: I provide no guarantee of even a single line of code in this repo. This is outdated by at least 4 years and is
+only open-sourced for educational purposes. Most of the code is undocumented since I am a solo-developer. Use AI!
 
-A **Solana Sandwich Bot** is a type of **MEV (Maximal Extractable Value)** bot designed to exploit price discrepancies in Solana's decentralized exchange (**DEX**) transactions by inserting ("sandwiching") its own trades around a victim's transaction.
+I wasn't proud of this code 4 years ago, I am even less proud of this code now. But it printed $$$.
 
-## Let's Connect!,
+# About
+For a few discontinuous months in between 2020-2021 I ran a bunch of bots primarily on bscscan. Sandwiching was one of them.
+This repo has code for the version 1 of a sandwich bot that was competitive for around a week. It was wildly profitable.
 
-<a href="mailto:fenrow325@gmail.com" target="_blank">
-  <img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Gmail">
-</a>
-<a href="https://t.me/fenrow" target="_blank">
-  <img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram">
-</a>
-<a href="https://discord.com/users/fenrow_325" target="_blank">
-  <img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord">
-</a>
+I am a solo developer and being competitive on-chain is more than a fulltime job, I had several sleepless nights.
+However, developing MEV bots is a hyper-learning experience. I would recommend every programmer to do it at least once in their
+life. You will learn distributed computing, parallel programming, optimization techniques, reliable system design and more.
+The thrill of fighting with code on-chain is unmatched. It's addicting, it's tiring, it's thrilling, it's humbling.
 
-### Global Metrics
-|Metric|Value|
-|---|---|
-|Proportion of sandwich-inclusive block|2.858%|
-|Average sandwiches per block|0.04020|
-|Standard Deviation of sandwiches per block|0.31385|
+Following is the alpha for my sandwich bot:
+1. PGA: Price Gas Auction -- You're not the only sandwich bot on chain, you need to out-gas others. PGA helps!
+2. ARC: Active Rug Combat -- Salmonella attacks and rugs are common, you need to actively combat them and cancel your transactions before the block is mined. Unlike ARB bots, transactions aren't atomic here. I wasn't using flashbot bundles.
+3. Simulating the next block with a new geth API call -- I use some heuristics to identify targets and binary search to find my sandwich parameters. This is a very powerful tool, this is the entry-way to generalized MEV bots. The world is your oyester!
+4. Fast mempool (bloxroute)
+
+# Directory Structure
+- `contract`: Solidity code for the sandwich contract bot
+- `geth_fork`: My fork of geth with an additional API for simulating the next block
+- `client`: NodeJS client code actually running the bot, it reads the mempool to identify opportunities and makes calls to our contract using ethers/web3js
 
 
-### Stake pool dsitribution (Epoch 777):
-|Pool|Stake (SOL)|Pool Share|
-|---|---|---|
-|Marinade (overall)|4,769,581|53.10%|
-| - Marinade Liquid|2,394,101|49.62%|
-| - Marinade Native|2,375,480|57.14%|
-|Jito|4,802,602|27.59%|
-|xSHIN|271,700|27.22%|
-|SFDP|4,931,260|12.70%|
-|JPool|83,242|7.71%|
-|BlazeStake|50,520|4.59%|
-|The Vault|17,952|1.14%|
-|Aero|1,831|0.36%|
+# Future versions
+This is v1 of my sandwich code. And one of many on-chain bots I wrote. ALL versions and ALL bots share the same structure:
+1. A geth client
+2. A contract
+3. A caller code with heuristics and checks
+4. Monitoring
 
-### Honourable Mention
-These are hand-picked, visible to the naked eye colluders. If you're staking to them, you should unstake because you placed your trust on validators actively breaking trust.
 
-If your validator is on this list, check the docs of your favourite Solana validator flavour, compile the binaries yourself and make sure to apply any command line arguments as indicated.
+Future versions of this sandwich bot followed better software engineering principles, were distributed, used my own
+network of nodes instead of bloxroute, optimized contracts (suicide and golfing), multi-chain and a lot more monitoring
+and dashboard like tools. I encourage you to build them for yourself.
 
-|Validator|Stake|Observed Leader Blocks|Weighted Sandwich-inclusive blocks|Weighted Sandwiches|
-|---|---|---|---|---|
-|Haus – Guaranteed Best APY & No Fees|2,005,970|31,492|1,528.50|1,907.67|
-|AG 0% fee + ALL MEV profit share|1,463,103|23,640|2,043.83|2,461.58|
-|HM5H...dMRA|1,037,426|14,852|1,128.42|1,635.42|
-|BT8L...gziD|807,033|12,284|4,916.08|11,013.92|
-|[Marinade Customer] 9fgw...zsXs|362,150|2,704|1,251.92|3,258.25|
-|[Marinade/Jito Customer] AltaBlock|276,158|1,932|725.00|1,373.83|
-|Blocksmith 🗝️|265,604|5,276|437.50|533.42|
+# Personal Notes & Advice
+## Generalized MEV Bot – Conceptual Overview
+Let the actual sequence of transactions in the next block be denoted by:
 
-## Preface
-Sandwiching refers to the action of forcing the earlier inclusion of a transaction (frontrun) before a transaction published earlier (victim), with another transaction after the victim transaction to realise a profit (backrun), while abusing the victim's slippage settings. We define a sandwich as "a set of transactions that include exactly one frontrun and exactly one backrun transaction, as well as at least one victim transaction", a sandwicher as "a party that sandwiches", and a colluder as "a validator that forwards transactions they receive to a sandwicher".
+```
+T = {t₀, t₁, t₂, ..., tₙ}
+```
 
-Some have mentioned that users should issue transactions with lower slippage instead but it's not entirely possible when trading token pairs with extremely high volatility. Being forced to issue transactions with low slippage may lead to higher transaction failure rates and missed opportunities, which is also suboptimal.
+However, since the true contents of the next block are unknowable in advance, we rely on our *best* mempool view, which gives us an estimated block:
 
-The reasons why sandwiching is harmful to the ecosystem had been detailed by [another researcher](https://github.com/a-guard/malicious-validators/blob/main/README.md#why-are-sandwich-attacks-harmful) and shall not be repeated in detail here, but it mainly boils down to breaking trust, transparency and fairness.
+```
+T' = {t′₀, t′₁, t′₂, ..., t′ₘ}
 
-We believe that colluder identification should be a continuous effort since [generating new keys](https://docs.anza.xyz/cli/wallets/file-system) to run a new validator is essentially free, and with a certain stake pool willing to sell stake to any validator regardless of operating history, one-off removals will prove ineffective. This repository aims to serve as a tool to continuously identify sandwiches and colluders such that relevant parties can remove stake from sandwichers as soon as possible.
+```
 
-## Key Components
+A generalized MEV (Maximal Extractable Value) bot** aims to insert a set of its own transactions:
 
-### MEV (Maximal Extractable Value)
+```
 
-- The profit extracted by reordering, inserting, or censoring transactions in a block.
-- On Solana, MEV strategies include frontrunning, backrunning, and sandwich attacks.
+X = {x₀, x₁, ..., xₖ}
 
-### Sandwich Attack Mechanics
+```
 
-- Frontrun: The bot places a buy order before the victim’s large buy (increasing price).
-- Victim’s Transaction: The victim executes their trade at a worse price due to the bot’s initial trade.
-- Backrun: The bot sells the asset immediately after, profiting from the inflated price.
+The goal is to construct a modified transaction sequence (i.e., a candidate block):
 
-### Solana-Specific Challenges
+```
+B = {t′₀, x₀, x₁, t′₁, t′₂, x₂, ...}
+```
+We aim for `B` to be as close to `T` as possible. This is achieved using a good distributed nodes infrastructure like bloxroute or something of your own.
+On BSC, some miners cheat and have lower delta between `B` and `T`, centralization is unfair on the chain. This was the case 4-5 years ago, I am not sure how much has the community changed since then.
 
-- High Throughput: Solana’s fast block times (~400ms) require low-latency bots.
-- Transaction Parallelization: Solana processes transactions in parallel, making MEV extraction different from Ethereum.
-- Priority Fees: Bots must set higher fees to ensure their transactions are prioritized.
-
-### Required Tech Stack
-
-- RPC Nodes (QuickNode, Helius, private nodes): For low-latency transaction data.
-- Jito Labs (Jito-Solana client): Optimized for MEV with features like bundled transactions.
-- Sealevel Runtime: Understanding Solana’s parallel execution model for efficient MEV.
-- Web3.js / @solana/web3.js: For interacting with the Solana blockchain.
-- Arbitrage Detection Algorithms: Identifying profitable sandwich opportunities.
-
-## Report Interpretation
-The reports consist of 14 columns and their meanings are as follows:
-|Column(s)|Meaning|
-|---|---|
-|leader/vote|The validator's identity and vote account pubkeys|
-|name|The validator's name according to onchain data|
-|Sc|"Score", normalised weighted number of sandwiches|
-|Sc_p|"Presence score", normalised number of blocks with sandwiches, which roughly means proportion of sandwich inclusive blocks|
-|R-Sc/R-Sc_p|Unnormalised Sc and Sc_p|
-|slots|Number of leader slots observed for the validator|
-|Sc_p_{lb\|ub}|Bounds of the confidence interval of the validator's true proportion of sandwich inclusive blocks. Flagged if the lower bound is above the cluster mean|
-|Sc_{lb\|ub}|Bounds of the confidence interval of which the validator is considered to have an "average" number of sandwiches per block. Flagged if Sc_p is above the upper bound|
-{Sc_p\|Sc}_flag|True if the validator is being flagged due to the respective metric, false otherwise|
+The set of all possible such blocks `B` is effectively infinite due to the combinatorial explosion of insert positions
+and transaction variations. Therefore, brute-force search over all possible blocks is intractable.
 
 ---
 
-## 📞 Contact Information
-For questions, feedback, or collaboration opportunities, feel free to reach out:
+You can then run the following algorithm:
+```
 
-<div align="left">
+1. Check initial balance
+2. For each candidate block b ∈ B:
+   While b is not yet mined:
+    a. Simulate execution of b
+    b. Check resulting balance
+    c. If balance increased:
+   Add b to list of profitable blocks
+3. From the profitable blocks, execute the one with the highest gain
 
-📧 **Email**: [fenrow325@gmail.com](mailto:fenrow325@gmail.com)  
-📱 **Telegram**: [@fenroW](https://t.me/fenrow)  
-🎮 **Discord**: [@fenroW](https://discord.com/users/fenrow_325)  
-
-</div>
-
+```
 ---
+
+Due to the intractability of |B|, generalized MEV bots use heuristics to narrow down the search space. Common tactics include:
+
+- **Sandwiching**: Placing a buy and sell order around a victim's trade.
+- **Copy-trading bots**: Replicating profitable trades from observed mempool activity.
+- **Arbitrage bots**: Exploiting price differences across DEXs or pools.
+- **Sniping bots**: Front-running token launches or NFTs.
+
+These heuristics enable MEV bots to act efficiently under latency and compute constraints.
+You also need a reliable mempool view, this would require setting up infra costing thousands of dollars. Good investment.
+
+
+## On-chain Data is All you Need
+To develop a competitive MEV bot, there are no guides, no tutorials, no research papers, no books that can help you find
+an unique alpha. Resources might help learn but resources won't help win and make money.
+All you have is on-chain data and all you need is on-chain data. Stay away from online communities and discord groups
+like plague. They are noise distracting you from doing what's important -- learn to code and read on-chain data.
+
+## Programming
+I am assuming you are at least familiar with a CS undergrad course. If not, get an undergraduate degree. After that,
+read the following: 
+
+Before jumping into MEV, C++ and Python were the only languages I was familiar with. I had to learn basics of Go, solidity
+and JS (better for async programming than python). I never formally learned these languages, I simply thought of logic
+and my hands automatically translated them to code (with the help of internet and references). LLMs make this even easier now.
+
+If I didn’t need structured lessons to learn new languages back then, you definitely don’t need them now -- especially with
+LLMs that can write most of your code. Don’t get stuck on learning syntax or watching hours of lectures. Focus on
+developing ideas and alpha first. Translating them into code is the easy part.
+
+Develop thoughts and language would follow. Develop alpha and converting that into code is the last thing you need to
+worry about. For e.g., obsessing over Solidity gas optimizations is mostly a distraction. If someone frontruns your
+contract's functions using gas tricks, you can almost always reverse engineer what they did from the bytecode. Learning
+everything bottom up is inefficient. Prioritize what matters. This approach has worked well for me and it might work
+for you too.
+
+## Lack of meaning
+Developing MEV bots brought no meaning to my life. The world of MEV and high-frequency trading is built on secrecy,
+zero-sum games, and exploiting asymmetries in information. This goes against my principles of knowledge sharing and
+creating value for making the world a better place. Creating money without creating value is meaningless and hollow to me.
+
+*It was fun but so are video games. I stopped doing both for now.*
+
+Today, I work as an AI engineer at a startup, and the contrast is stark. I work on creating value, I can share what I
+learn, collaborate freely, and take pride in the fact that my work is pushing technology forward in a way that benefits
+more than just a privileged few.
+
+There’s joy in that. Working with a team, being part of a community, helping and being helped by others outside of
+arcane on-chain communication and rather through real-world meetings and code is comfortably rewarding. I feel happier.
+
+## FUCK YOU & THANK YOU
+To all other sandwich bots ciompeting with and targeting me (you know who are you): FUCK YOU and THANK YOU for all the fun.
