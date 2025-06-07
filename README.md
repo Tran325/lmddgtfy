@@ -1,4 +1,4 @@
-# Sandwich Bot
+Sandwich Bot
 
 ## Overview
 
